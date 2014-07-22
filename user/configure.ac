@@ -7,6 +7,12 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
 
+# NOTE: adding subdir-objects optiona here would prevent 
+#       the warnings from appearing during autoreconf,
+#       but due to the bug mentioned below we are not
+#       enabling that option just yet.
+#
+# NOTE: http://debbugs.gnu.org/cgi/bugreport.cgi?bug=13928
 AM_INIT_AUTOMAKE([1.9 foreign])
 AM_MAINTAINER_MODE([disable])
 

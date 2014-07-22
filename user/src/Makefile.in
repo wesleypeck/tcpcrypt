@@ -334,7 +334,7 @@ tcpcryptd_SOURCES = tcpcryptd.c tcpcrypt.c crypto.c crypto_rsa.c \
 	$(top_srcdir)/contrib/rijndael-alg-fst.c $(am__append_1) \
 	$(am__append_2) $(am__append_4) $(am__append_6) \
 	$(am__append_7)
-tcpcryptd_CFLAGS = -I$(top_srcdir)/include/
+tcpcryptd_CFLAGS = -I$(top_srcdir)/include/ -I$(top_srcdir)
 tcpcryptd_LDADD = -lcrypto $(am__append_3) $(am__append_5)
 all: all-am
 
