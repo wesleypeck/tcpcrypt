@@ -5,7 +5,7 @@ tcpcryptd_SOURCES = \
 	crypto_umac.c $(top_srcdir)/contrib/umac.c crypto_hkdf.c \
 	crypto_reg.c crypto_ecdhe.c \
 	$(top_srcdir)/contrib/rijndael-alg-fst.c
-tcpcryptd_CFLAGS = -I$(top_srcdir)/include/
+tcpcryptd_CFLAGS = -I$(top_srcdir)/include/ -I$(top_srcdir)
 tcpcryptd_LDADD  = -lcrypto
 
 if OS_BSD
