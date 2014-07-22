@@ -12287,6 +12287,21 @@ fi
 
 done
 
+for ac_header in openssl/crypto.h openssl/x509.h openssl/pem.h openssl/ssl.h openssl/err.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+else
+  as_fn_error $? "\"OpenSSL headers required\"" "$LINENO" 5
+fi
+
+done
+
 
 # Checks for typedefs, structures, and compiler characteristics.
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for inline" >&5

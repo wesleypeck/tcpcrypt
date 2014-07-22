@@ -73,6 +73,7 @@ AC_CHECK_LIB([iphlpapi], [GetAdaptersInfo]) # TODO: find symbol name
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h limits.h netinet/in.h stddef.h stdint.h stdlib.h string.h strings.h sys/socket.h sys/time.h unistd.h])
+AC_CHECK_HEADERS([openssl/crypto.h openssl/x509.h openssl/pem.h openssl/ssl.h openssl/err.h],[],[AC_MSG_ERROR("OpenSSL headers required")])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
