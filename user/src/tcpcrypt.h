@@ -3,8 +3,7 @@
 
 #include <tcpcrypt/tcpcrypt.h>
 #include "tcpcrypt_ctl.h"
-
-#define TCPCRYPT_VERSION	"0.2"
+#include "tcpcrypt_version.h"
 
 #define TC_DUMMY	0x69
 
@@ -37,7 +36,7 @@ enum {
 struct tc_cipher_spec {
 	uint8_t  tcs_algo_top;
 	uint16_t tcs_algo;
-} __attribute__ ((__packed__));
+} __attribute__ ((gcc_struct, __packed__));
 
 struct tc_scipher {
 	uint32_t sc_algo;

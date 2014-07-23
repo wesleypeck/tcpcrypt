@@ -11,6 +11,7 @@
 #include <errno.h>
 #include <stdint.h>
 #include <fcntl.h>
+#include <time.h>
 #include <openssl/err.h>
 
 #include "inc.h"
@@ -463,7 +464,6 @@ static void test_connect(struct network_test *t)
 {
 	int s;
 	struct sockaddr_in s_in;
-	socklen_t sl = sizeof(s_in);
 
 	if ((s = socket(AF_INET, SOCK_STREAM, 0)) == -1)
 		err(1, "socket()");
@@ -506,11 +506,6 @@ static void test_connect(struct network_test *t)
 	t->nt_ctl.tcc_dst   = s_in.sin_addr;
 	t->nt_ctl.tcc_dport = s_in.sin_port;
 
-	if (getsockname(s, (struct sockaddr*) &s_in, &sl) == -1)
-		err(1, "getsockname()");
-
-	t->nt_ctl.tcc_src = s_in.sin_addr;
-
 	t->nt_state = TEST_STATE_CONNECTING;
 	t->nt_start = time(NULL);
 }
@@ -549,6 +544,8 @@ static void test_connecting(struct network_test *t)
 	char *buf = NULL;
 	unsigned char sid[1024];
 	unsigned int sidlen = sizeof(sid);
+	struct sockaddr_in s_in;
+	socklen_t sl = sizeof(s_in);
 
 	tv.tv_sec  = 0;
 	tv.tv_usec = 0;
@@ -569,6 +566,11 @@ static void test_connecting(struct network_test *t)
 		test_finish(t, rc);
 		return;
 	}
+
+	if (getsockname(s, (struct sockaddr*) &s_in, &sl) == -1)
+		err(1, "getsockname()");
+
+	t->nt_ctl.tcc_src = s_in.sin_addr;
 
 	rc = tcpcryptd_getsockopt(&t->nt_ctl, TCP_CRYPT_SESSID, sid, &sidlen);
 
@@ -661,20 +663,35 @@ static void run_network_test(struct network_test *t)
 	}
 }
 
-static void test_network(void)
+static int resolve_server(void)
 {
 	struct hostent *he = gethostbyname(_conf.cf_test_server);
 	struct in_addr **addr;
 
+	_state.s_nt_ip.s_addr = INADDR_ANY;
+
 	if (!he)
-		return;
+		return 0;
 
 	addr = (struct in_addr**) he->h_addr_list;
 
 	if (!addr[0])
-		return;
+		return 0;
 
 	_state.s_nt_ip = *addr[0];
+
+	return 1;
+}
+
+static void test_network(void)
+{
+	resolve_server();
+
+	if (_state.s_nt_ip.s_addr == INADDR_ANY) {
+		xprintf(XP_ALWAYS, "Won't test network - can't resolve %s\n",
+			_conf.cf_test_server);
+		return;
+	}
 
 	xprintf(XP_ALWAYS, "Testing network via %s\n",
 		inet_ntoa(_state.s_nt_ip));
@@ -1114,6 +1131,8 @@ int main(int argc, char *argv[])
 			break;
 		}
 	}
+
+	resolve_server();
 
 	if (signal(SIGINT, sig) == SIG_ERR)
 		err(1, "signal()");
